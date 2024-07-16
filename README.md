@@ -32,7 +32,7 @@ Before running any code, ensure the required R packages have been installed.
 
 -   All components are saved in `/nszinb/data/sim.RData`
          
-<img src="/nszinb/fig/simData.pdf" width="700">
+<img src="/nszinb/fig/simData.png" width="700">
 
 
 ### Fit the model and summarize the results
