@@ -1,27 +1,19 @@
 rm(list=ls())
 require(nimble)
-
 source('src/nimbleFtns.R')
 
-# runID = as.integer(Sys.getenv("SLURM_ARRAY_TASK_ID"))
+# directory ----
+dirn = 'nszinb'
 
-# ==============================================================================
+filepath.fit = paste0(dirn, '/fit/')
+ifelse(!dir.exists(filepath.fit), dir.create(filepath.fit, recursive = T), FALSE)
+
+
 # load data ----
-# ==============================================================================
-dataname = 'refuse4y'
-
-load(paste0('data/', dataname, '.RData'))
+load(paste0(dirn, '/data/sim.RData'))
 
 
-
-# ==============================================================================
-# Fit the model ----
-# ==============================================================================
-
-filename = paste0('fit/', dataname, 'ZINB.RData')
-
-
-## preliminaries for nimble ----
+# preliminaries for nimble ----
 p = ncol(X)
 consts = list(n = nrow(X), p = p)
 data = list(y = y, X = X)
@@ -32,18 +24,13 @@ inits = list(
 )
 
 
-
-
-### run the MCMC algorithm ----
+# run the MCMC algorithm ----
 ptm = proc.time()[3]
-mcmc.out = nimbleMCMC(code = zi_nb_reg, data = data, constants = consts, inits = inits,
-                      niter = 50000, nburnin = 1000, nchains = 1, WAIC = T, summary = T,
-                      # niter = 2000, nburnin = 1000, nchains = 1, WAIC = T, summary = T,
-                      monitors = c('beta1', 'beta2', 'theta'))
+mcmc.out = nimbleMCMC(
+  code = zi_nb_reg, data = data, constants = consts, inits = inits,
+  niter = 50000, nburnin = 1000, nchains = 1, WAIC = T, summary = T,
+  monitors = c('beta1', 'beta2', 'theta')
+)
 rtime = proc.time()[3] - ptm
 
-# mcmc.out$samples
-# mcmc.out$summary
-# mcmc.out$WAIC
-
-save(mcmc.out, file = filename)
+save(mcmc.out, rtime, file = paste0(filepath.fit, 'simZINB.RData'))

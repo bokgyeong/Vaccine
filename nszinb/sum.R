@@ -1,7 +1,11 @@
 rm(list = ls())
-library(coda); library(tidyverse); library(egg); library(grid); library(patchwork)
-library(batchmeans); library(foreach); library(doParallel); library(parallel)
-library(ggbreak)
+# require(coda); 
+require(tidyverse); require(egg); 
+# require(grid)
+require(patchwork)
+require(batchmeans); require(foreach); 
+# require(doParallel); require(parallel)
+# require(ggbreak)
 
 get_legend<-function(myggplot){
   tmp <- ggplot_gtable(ggplot_build(myggplot))
@@ -10,13 +14,17 @@ get_legend<-function(myggplot){
   return(legend)
 }
 
+# directory ----
+dirn = 'nszinb/'
+dirn.data = paste0(dirn, 'data/')
+dirn.fit = paste0(dirn, 'fit/')
+dirn.fig = paste0(dirn, 'fig/')
+ifelse(!dir.exists(dirn.fig), dir.create(dirn.fig, recursive = T), FALSE)
 
-# ==============================================================================
-# load results ----
-# ==============================================================================
 
-load('data/refuse4y.RData')
-load('fit/refuse4yZINB.RData')
+# summarize results ----
+load(paste0(dirn.data, 'sim.RData'))
+load(paste0(dirn.fit, 'simZINB.RData'))
 
 summat = mcmc.out$summary
 
@@ -34,18 +42,8 @@ muhat =  exp( as.vector(X %*% beta2hat) )
 
 
 
-# ==============================================================================
-# mean and HPD for regression coefficients ----
-# ==============================================================================
-
-Predictors = c('Intercept', 
-               'log(Interaction)',
-               'Health insurance',
-               'Pediatrician reporting', 'Household size',
-               'Religious congregation', 'Limited English',
-               'Private school', 'High income', 'Same area', 
-               'State law leniency', 'State autism')
-
+# figures for coefficients ----
+Predictors = paste0('Predictor ', 1:2)
 
 summaryCoef = data.frame(
   Process = 'Detection', 
@@ -57,7 +55,7 @@ summaryCoef = data.frame(
 summaryCoef = rbind(
   summaryCoef,
   data.frame(
-    Process = 'Refusal cases', 
+    Process = 'Count', 
     Median = summat[beta2Ind,2], 
     CIlow = summat[beta2Ind,4],
     CIup = summat[beta2Ind,5],
@@ -68,26 +66,24 @@ summaryCoef = summaryCoef %>% mutate(hasZero = ifelse(CIlow <= 0 & CIup >= 0, 'I
 
 pBinary = summaryCoef %>% 
   filter(Process == 'Detection') %>%
-  filter(Predictor != 'Intercept') %>% 
   ggplot(aes(x = Median, y = Predictor, xmin = CIlow, xmax = CIup)) +
   geom_errorbar(aes(linetype = hasZero), width = 0.2) +
   geom_point(aes(shape = hasZero)) +
   geom_vline(xintercept = 0, linetype = 1, size = 0.2) +
   # scale_x_break(c(0.4, 2.62), ticklabels = c(2.7)) +
-  labs(title = '(a) Detection', x = '95% HPD interval', y = 'Covariates') +
+  labs(title = '(a) Detection', x = '95% HPD interval', y = '') +
   guides(linetype = guide_legend(title=""),
          shape = guide_legend(title="")) +
   theme(legend.position = 'none')
 
 pCount = summaryCoef %>%
-  filter(Process == 'Refusal cases') %>%
-  filter(Predictor != 'Intercept') %>% 
+  filter(Process == 'Count') %>%
   ggplot(aes(x = Median, y = Predictor, xmin = CIlow, xmax = CIup)) +
   geom_errorbar(aes(linetype = hasZero), width = 0.2) +
   geom_point(aes(shape = hasZero)) +
   geom_vline(xintercept = 0, linetype = 1, size = 0.2) +
   # scale_x_break(c(0.25, 0.91), ticklabels = c(0.95)) +
-  labs(title = '(b) Refusal cases', x = '95% HPD interval', y = 'Covariates')+
+  labs(title = '(b) Count', x = '95% HPD interval', y = '')+
   guides(linetype = guide_legend(title=""),
          shape = guide_legend(title="")) +
   theme(legend.position = 'none')
@@ -96,21 +92,19 @@ pCount = summaryCoef %>%
 plot_both = pBinary + pCount
 plot_both
 
-ggsave(plot = plot_both, width = 9, height = 3.5, file = 'fig/refuseCoef.pdf')
+ggsave(paste0(dirn.fig, 'simCoef.png'), plot_both, width = 6.2, height = 3)
 
 
 
 
-# =============================================================================-
-# Compute RQRs ----
-# =============================================================================-
+# residual analysis ----
 source('src/RFtns.R')
 
-dat.est = data %>%
-  dplyr::select(year, month, fips, y, cov, under5) %>%
-  add_column(pii = piihat, mu = muhat, nu = nuhat, est = muhat * piihat,
-             rqr = stdRQR_ZINB(data$y, muhat, thetahat, piihat))
-
+dat.est = data.frame(
+  y = y, pii = piihat, mu = muhat, theta = thetahat, est = muhat * piihat
+) %>% mutate(
+  rqr = stdRQR_ZINB(y, mu, theta, pii)
+)
 
 plot.rqr.scatter = dat.est %>%
   filter(rqr != Inf) %>%
@@ -132,13 +126,6 @@ plot.rqr.qq = dat.est %>%
 
 rqr.final = ggarrange(plot.rqr.scatter, plot.rqr.qq, nrow = 1)
 
-ggsave(plot = rqr.final, width = 6, height = 3.2, file = 'fig/refuseRQR.eps')
-
-
-
-
-# =============================================================================-
-# Plot maps ----
-# =============================================================================-
+ggsave(paste0(dirn.fig, 'simRQR.png'), rqr.final, width = 6, height = 3.2)
 
 

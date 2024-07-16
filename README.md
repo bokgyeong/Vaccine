@@ -31,8 +31,23 @@ Before running any code, ensure the required R packages have been installed.
 -   Generate a $m \times m$ lattice from a non-spatial ZINB regression model
 
 -   All components are saved in `/nszinb/data/sim.RData`
-         
-<img src="/nszinb/fig/simData.png" width="700">
 
+<img src="/nszinb/fig/simData.png" width="700"/>
 
-### Fit the model and summarize the results
+### Fit the model
+
+`/nszinb/fitZINB.R`
+
+-   Fit the non-spatial ZINB regression model to the simulated dataset
+
+-   Posterior samples and computing time are saved in `/nszinb/fit/simZINB.RData`
+
+### Summary the results
+
+`nszinb/sum.R`
+
+-   Provide figures on regression coefficients and residual analysis
+
+![](nszinb/fig/simCoef.png){width="700"}
+
+![](nszinb/fig/simRQR.png){width="700"}
