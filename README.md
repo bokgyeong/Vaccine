@@ -48,6 +48,6 @@ Before running any code, ensure the required R packages have been installed.
 
 -   Provide figures on regression coefficients and residual analysis
 
-![](nszinb/fig/simCoef.png){width="500"}
+![](nszinb/fig/simCoef.png){width="450"}
 
-![](nszinb/fig/simRQR.png){width="500"}
+![](nszinb/fig/simRQR.png){width="450"}
