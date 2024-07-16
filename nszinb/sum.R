@@ -46,7 +46,7 @@ muhat =  exp( as.vector(X %*% beta2hat) )
 Predictors = paste0('Predictor ', 1:2)
 
 summaryCoef = data.frame(
-  Process = 'Detection', 
+  Process = 'Binary', 
   Median = summat[beta1Ind,2], 
   CIlow = summat[beta1Ind,4],
   CIup = summat[beta1Ind,5],
@@ -65,13 +65,13 @@ summaryCoef$Predictor = factor(summaryCoef$Predictor, levels = rev(unique(summar
 summaryCoef = summaryCoef %>% mutate(hasZero = ifelse(CIlow <= 0 & CIup >= 0, 'Include zero', 'Do not include zero'))
 
 pBinary = summaryCoef %>% 
-  filter(Process == 'Detection') %>%
+  filter(Process == 'Binary') %>%
   ggplot(aes(x = Median, y = Predictor, xmin = CIlow, xmax = CIup)) +
   geom_errorbar(aes(linetype = hasZero), width = 0.2) +
   geom_point(aes(shape = hasZero)) +
   geom_vline(xintercept = 0, linetype = 1, size = 0.2) +
   # scale_x_break(c(0.4, 2.62), ticklabels = c(2.7)) +
-  labs(title = '(a) Detection', x = '95% HPD interval', y = '') +
+  labs(title = '(a) Binary', x = '95% HPD interval', y = '') +
   guides(linetype = guide_legend(title=""),
          shape = guide_legend(title="")) +
   theme(legend.position = 'none')
@@ -86,7 +86,9 @@ pCount = summaryCoef %>%
   labs(title = '(b) Count', x = '95% HPD interval', y = '')+
   guides(linetype = guide_legend(title=""),
          shape = guide_legend(title="")) +
-  theme(legend.position = 'none')
+  theme(legend.position = 'none',
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())
 
 
 plot_both = pBinary + pCount
