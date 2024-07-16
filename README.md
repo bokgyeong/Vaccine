@@ -48,5 +48,6 @@ Before running any code, ensure the required R packages have been installed.
 
 -   Provide posterior means and highest posterior credible intervals for regression coefficients
   <img src="/nszinb/fig/simCoef.png" width="450"/>
+  
 -   Analyze random quantile residuals
   <img src="/nszinb/fig/simRQR.png" width="450"/>
