@@ -52,4 +52,4 @@ Before running any code, ensure the required R packages have been installed.
 
 -   Analyze random quantile residuals (RQRs)
 
-    <img src="/nszinb/fig/simRQR.png" width="500"/>
+    <img src="/nszinb/fig/simRQR.png" width="450"/>
