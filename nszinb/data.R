@@ -95,5 +95,5 @@ plot.mu = dat %>%
 
 plot.data = ggarrange(plot.y, plot.pii, plot.mu, nrow = 1)
 
-ggsave(paste0(filepath.fig, 'simData.pdf'), plot.data, width = 7.8, height = 3.3)
+ggsave(paste0(filepath.fig, 'simData.png'), plot.data, width = 7.8, height = 3.3)
 
