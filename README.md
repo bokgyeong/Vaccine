@@ -48,8 +48,16 @@ Before running any code, ensure the required R packages have been installed.
 
 -   Provide posterior mean estimates and highest posterior density intervals for regression coefficients
 
-    ![](/nszinb/fig/simCoef.png){width="500"}
+    ```         
+    <p align="center">
+      <img src="/nszinb/fig/simCoef.png" width="500">
+    </p>
+    ```
 
 -   Analyze random quantile residuals (RQRs)
 
-    ![](/nszinb/fig/simRQR.png){width="450"}
+    ```         
+    <p align="center">
+      <img src="/nszinb/fig/simRQR.png" width="500">
+    </p>
+    ```
