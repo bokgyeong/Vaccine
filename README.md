@@ -46,8 +46,6 @@ Before running any code, ensure the required R packages have been installed.
 
 `nszinb/sum.R`
 
--   Provide posterior means and highest posterior density intervals for regression coefficients
-  <img src="/nszinb/fig/simCoef.png" width="500"/>
-  
--   Analyze random quantile residuals (RQRs)
-  <img src="/nszinb/fig/simRQR.png" width="450"/>
+-   Provide posterior mean estimates and highest posterior density intervals for regression coefficients <img src="/nszinb/fig/simCoef.png" width="500"/>
+
+-   Analyze random quantile residuals (RQRs) <img src="/nszinb/fig/simRQR.png" width="450"/>
