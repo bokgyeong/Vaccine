@@ -47,5 +47,6 @@ Before running any code, ensure the required R packages have been installed.
 `nszinb/sum.R`
 
 -   Provide figures on regression coefficients and residual analysis
+-   All figures are saved in `/nszinb/fig/`
 
 <img src="/nszinb/fig/simCoef.png" width="450"/> <img src="/nszinb/fig/simRQR.png" width="450"/>
